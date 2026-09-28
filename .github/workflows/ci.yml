@@ -53,9 +53,9 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
         run: |
-          if [[ -z "$SONAR_TOKEN" || -z "$SONAR_HOST_URL" || -z "$SONAR_ORGANIZATION" ]]; then
+          if [[ -z "$SONAR_TOKEN" || ! "$SONAR_HOST_URL" =~ ^https?:// || -z "$SONAR_ORGANIZATION" || "$SONAR_ORGANIZATION" == "SONAR_ORGANIZATION" ]]; then
             echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::SonarQube not run: set SONAR_TOKEN and SONAR_HOST_URL secrets and the SONAR_ORGANIZATION variable."
+            echo "::warning::SonarQube not run: set a valid SONAR_TOKEN, an HTTP(S) SONAR_HOST_URL, and the real SONAR_ORGANIZATION key."
           else
             echo "configured=true" >> "$GITHUB_OUTPUT"
           fi
