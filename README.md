@@ -63,5 +63,9 @@ administración.
 
 El workflow de GitHub Actions inicia la API en un entorno temporal del runner,
 ejecuta el health check y realiza un escaneo OWASP ZAP. El informe se publica
-como artefacto de la ejecución. Para SonarQube, configura los secretos
-`SONAR_TOKEN` y `SONAR_HOST_URL` en el repositorio.
+como artefacto de la ejecución. Para SonarQube Cloud, configura el secreto
+`SONAR_TOKEN`, el secreto `SONAR_HOST_URL` (`https://sonarcloud.io`) y la
+variable de repositorio `SONAR_ORGANIZATION` con la clave de tu organización.
+Si no están configurados, el análisis Sonar se omite con una advertencia; las
+pruebas y el escaneo ZAP siguen ejecutándose. Puedes iniciar el workflow
+manualmente desde la pestaña **Actions** mediante **Run workflow**.
