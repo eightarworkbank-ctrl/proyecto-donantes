@@ -89,6 +89,9 @@ jobs:
           set -euo pipefail
           jwt_secret="$(python -c 'import secrets; print(secrets.token_urlsafe(48))')"
           admin_password="$(python -c 'import secrets; print(secrets.token_urlsafe(24))')"
+          zap_dir="$RUNNER_TEMP/zap"
+          mkdir -p "$zap_dir"
+          chmod 777 "$zap_dir"
           echo "::add-mask::$jwt_secret"
           echo "::add-mask::$admin_password"
           export JWT_SECRET_KEY="$jwt_secret"
@@ -117,9 +120,12 @@ jobs:
           fi
 
           docker run --rm --network host \
-            -v "$PWD:/zap/wrk/:rw" \
+            -v "$zap_dir:/zap/wrk/:rw" \
             zaproxy/zap-stable:latest \
-            zap-baseline.py -t http://127.0.0.1:8000 -r zap-report.html -J zap-report.json -a -I
+            zap-baseline.py -t http://127.0.0.1:8000/docs -r zap-report.html -J zap-report.json -a -I
+
+          test -s "$zap_dir/zap-report.html"
+          test -s "$zap_dir/zap-report.json"
 
       - name: Upload OWASP ZAP report
         if: always()
@@ -127,6 +133,6 @@ jobs:
         with:
           name: owasp-zap-report
           path: |
-            zap-report.html
-            zap-report.json
+            ${{ runner.temp }}/zap/zap-report.html
+            ${{ runner.temp }}/zap/zap-report.json
           if-no-files-found: warn
