@@ -11,7 +11,7 @@ Implementar una API para registrar personas donantes con autenticación JWT, ges
 | Seguridad | JWT y control de permisos | JWT con `Bearer`, registro público limitado al rol `user` y permisos de administrador verificados |
 | Pruebas | Pytest + cobertura > 80% | Pytest + cobertura superior al 80% |
 | CI/CD | GitHub Actions con pruebas y análisis | API levantada en un entorno temporal del runner para health check y análisis de seguridad |
-| Calidad | SonarQube y OWASP ZAP | Workflow configurado para descargar cobertura, ejecutar SonarQube y generar el informe ZAP como artefacto; resultados pendientes de ejecutar en GitHub Actions |
+| Calidad y seguridad | Aikido y OWASP ZAP | Aikido integrado con el repositorio para análisis de seguridad; GitHub Actions ejecuta ZAP y conserva su informe como artefacto |
 
 ## 3. Lecciones aprendidas
 - La separación de modelos, esquemas y dependencias facilita la escalabilidad.

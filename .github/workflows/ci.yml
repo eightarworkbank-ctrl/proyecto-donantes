@@ -32,44 +32,6 @@ jobs:
           name: coverage-report
           path: coverage.xml
 
-  sonar:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Download coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-report
-
-      - name: Check SonarQube configuration
-        id: sonar-config
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
-        run: |
-          if [[ -z "$SONAR_TOKEN" || ! "$SONAR_HOST_URL" =~ ^https?:// || -z "$SONAR_ORGANIZATION" || "$SONAR_ORGANIZATION" == "SONAR_ORGANIZATION" ]]; then
-            echo "configured=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::SonarQube not run: set a valid SONAR_TOKEN, an HTTP(S) SONAR_HOST_URL, and the real SONAR_ORGANIZATION key."
-          else
-            echo "configured=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: SonarQube scan
-        if: steps.sonar-config.outputs.configured == 'true'
-        uses: SonarSource/sonarqube-scan-action@v5
-        with:
-          args: >
-            -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
   security-check:
     runs-on: ubuntu-latest
     steps:
